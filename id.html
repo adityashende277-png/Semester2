@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="st.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Search Section -->
+        <div class="search-box">
+            <input type="text" placeholder="Enter city name..." id="city-input">
+            <button id="search-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+
+        <!-- Weather info -->
+        <div class="weather-body" id="weather-body" style="display: none;">
+            <img src="https://cdn.weatherapi.com/weather/64x64/day/116.png" alt="Weather Content" class="weather-icon"
+                id="weather-icon">
+
+            <h1 class="temperature" id="temp">0<sup>°C</sup></h1>
+            <p class="description" id="condition">Mist</p>
+            <p class="city-name" id="city-display">Pune, India</p>
+
+            <div class="weather-details">
+                <div class="detail-card">
+                    <i class="fa-solid fa-water"></i>
+                    <div class="detail-text">
+                        <p>Humidity</p>
+                        <span id="humidity">45%</span>
+                    </div>
+                </div>
+                <div class="detail-card">
+                    <i class="fa-solid fa-wind"></i>
+                    <div class="detail-text">
+                        <p>Wind Speed</p>
+                        <span id="wind-speed">12 km/h</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error/Loading Messages -->
+        <div class="error" id="error-msg">
+            <p>City not found. Please try again.</p>
+        </div>
+        <div class="loading" id="loading-msg">
+            <p>Fetching weather...</p>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Weather - Key Metrics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+      :root{
+        --bg-start:#0f2436;
+        --bg-end:#86b7e9;
+        --card: rgba(255,255,255,0.04);
+        --glass-border: rgba(255,255,255,0.06);
+        --accent:#ffd166;
+        --radius:12px;
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;color:#fff;
+        background: linear-gradient(180deg,var(--bg-start) 0%, #2b6da8 40%, var(--bg-end) 100%); -webkit-font-smoothing:antialiased;
+      }
+
+      .wrap{
+        max-width:1100px;
+        margin:36px auto;
+        padding:28px;
+      }
+
+      .panel{
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        border-radius:16px;
+        padding:22px;
+        box-shadow: 0 18px 50px rgba(3,10,20,0.35);
+        backdrop-filter: blur(8px);
+      }
+
+      .title{
+        text-align:center;
+        font-family: "Playfair Display", serif;
+        font-size:22px;
+        font-weight:700;
+        margin-bottom:18px;
+      }
+
+      .grid{
+        display:grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap:18px;
+      }
+
+      /* single metric card */
+      .card{
+        background: var(--card);
+        border:1px solid var(--glass-border);
+        border-radius: var(--radius);
+        padding:16px;
+        min-height:120px;
+      }
+      .card h3{
+        margin:0 0 8px 0;
+        font-size:12px;
+        color:rgba(255,255,255,0.85);
+        letter-spacing:0.6px;
+      }
+      .value{
+        font-size:26px;
+        font-weight:700;
+        margin-bottom:6px;
+      }
+      .muted{
+        font-size:12px;
+        color:rgba(255,255,255,0.75);
+      }
+
+      /* wide row for Condition Throughout Day */
+      .wide{
+        grid-column: 1 / -1;
+        display:flex;
+        gap:12px;
+        align-items:center;
+      }
+      .timeline{
+        display:flex;
+        gap:10px;
+        padding:10px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+        border-radius:10px;
+        overflow:auto;
+        flex:1;
+      }
+      .slot{
+        min-width:72px;
+        text-align:center;
+        padding:8px;
+        border-radius:8px;
+        background: rgba(255,255,255,0.02);
+      }
+      .slot .t{font-size:12px;color:rgba(255,255,255,0.8)}
+      .slot .temp{font-weight:700;margin-top:6px}
+
+      /* responsive */
+      @media (max-width:900px){
+        .grid{grid-template-columns:repeat(2,1fr)}
+      }
+      @media (max-width:600px){
+        .grid{grid-template-columns:1fr}
+        .wide{flex-direction:column;align-items:stretch}
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="panel">
+        <div class="title">Current — Pimpri Chinchwad</div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>AIR QUALITY</h3>
+            <div class="value">121</div>
+            <div class="muted">Moderately Polluted — AQI</div>
+            <div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,0.72)">
+              Air quality index is 121, similar to yesterday at this time.
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>HUMIDITY</h3>
+            <div class="value">45%</div>
+            <div class="muted">Dew point ~15°</div>
+          </div>
+
+          <div class="card">
+            <h3>WIND</h3>
+            <div class="value">13 kph</div>
+            <div class="muted">Gusts 25 kph · SE · 125°</div>
+          </div>
+
+          <div class="card">
+            <h3>PRESSURE</h3>
+            <div class="value">1,016 hPa</div>
+            <div class="muted">Steady · Sea level</div>
+          </div>
+
+          <div class="card">
+            <h3>FEELS LIKE</h3>
+            <div class="value">28°</div>
+            <div class="muted">Similar to actual temperature</div>
+          </div>
+
+          <div class="card">
+            <h3>PRECIPITATION</h3>
+            <div class="value">0 mm</div>
+            <div class="muted">None expected in next 10 days</div>
+          </div>
+
+          <div class="wide" style="grid-column:1/-1; margin-top:6px;">
+            <div style="min-width:170px;">
+              <h3 style="margin-bottom:10px;">CONDITION — THROUGHOUT DAY</h3>
+              <div class="muted" style="font-size:13px">Overview of expected temperatures and brief condition</div>
+            </div>
+
+            <div class="timeline">
+              <div class="slot"><div class="t">Now</div><div class="temp">28°</div><div class="muted" style="margin-top:6px">Sunny</div></div>
+              <div class="slot"><div class="t">13:00</div><div class="temp">29°</div><div class="muted" style="margin-top:6px">Sunny</div></div>
+              <div class="slot"><div class="t">14:00</div><div class="temp">29°</div><div class="muted" style="margin-top:6px">Clouds</div></div>
+              <div class="slot"><div class="t">15:00</div><div class="temp">28°</div><div class="muted" style="margin-top:6px">Partly</div></div>
+              <div class="slot"><div class="t">16:00</div><div class="temp">27°</div><div class="muted" style="margin-top:6px">Cloudy</div></div>
+              <div class="slot"><div class="t">18:00</div><div class="temp">25°</div><div class="muted" style="margin-top:6px">Sunset</div></div>
+              <div class="slot"><div class="t">21:00</div><div class="temp">22°</div><div class="muted" style="margin-top:6px">Clear</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>
