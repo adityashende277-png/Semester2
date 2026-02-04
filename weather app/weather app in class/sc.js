@@ -42,25 +42,136 @@ searchInput.addEventListener("keypress", (e) => {
 
 // Default load
 window.addEventListener("DOMContentLoaded", () => {
-  fetchWeather("Pimpri Chinchwad");
+  getUserLocation();
 });
 
+function getUserLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        fetchMyLocationWeather(`${lat},${lon}`);
+      },
+      (error) => {
+        console.warn("Geolocation denied or error:", error);
+        // Fallback default
+        fetchMyLocationWeather("Pimpri Chinchwad");
+      }
+    );
+  } else {
+    // Fallback if no geolocation support
+    fetchMyLocationWeather("Pimpri Chinchwad");
+  }
+}
+
+async function fetchMyLocationWeather(query) {
+  const data = await getWeatherData(query);
+  if (data) {
+    updateSidebarMyLocation(data); // Update sidebar specific to "My Location"
+    updateDOM(data); // Also update main view initially
+  }
+}
+
 async function fetchWeather(city) {
+  const data = await getWeatherData(city);
+  if (data) {
+    updateDOM(data);
+    addToHistory(data.location.name, data.location.localtime, data.current.temp_c, data.current.condition.text);
+  }
+}
+
+async function getWeatherData(query) {
   try {
     const key = "6e8d0e95881c45dd9ca65113262301";
-    // Fetch 3 days forecast (Free tier limit usually)
-    const url = `https://api.weatherapi.com/v1/forecast.json?key=${key}&q=${city}&days=3&aqi=yes&alerts=no`;
+    const url = `https://api.weatherapi.com/v1/forecast.json?key=${key}&q=${query}&days=3&aqi=yes&alerts=no`;
 
     const response = await fetch(url);
     if (!response.ok) throw new Error("City not found");
-    const data = await response.json();
-
-    updateDOM(data);
+    return await response.json();
   } catch (error) {
     console.error(error);
     alert("Error fetching weather data. Please try again.");
+    return null;
   }
 }
+
+function updateSidebarMyLocation(data) {
+  const current = data.current;
+  const location = data.location;
+
+  sidebarLoc.textContent = location.name;
+  sidebarTemp.textContent = Math.round(current.temp_c) + "°";
+}
+
+// --- Search History Logic ---
+const historyContainer = document.getElementById("search-history-container");
+
+function addToHistory(city, timeStr, temp, condition) {
+  let history = JSON.parse(localStorage.getItem("weatherAppHistory")) || [];
+
+  // Remove if already exists to move to top
+  history = history.filter(item => item.city !== city);
+
+  // Add to front
+  history.unshift({ city, timeStr, temp, condition });
+
+  // Limit to 5 items
+  if (history.length > 5) history.pop();
+
+  localStorage.setItem("weatherAppHistory", JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  let history = JSON.parse(localStorage.getItem("weatherAppHistory")) || [];
+  historyContainer.innerHTML = "";
+
+  history.forEach(item => {
+    const date = new Date(item.timeStr);
+    const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const el = document.createElement("div");
+    el.className = "city-card";
+    el.style.cursor = "pointer";
+
+    // Main click updates weather
+    el.onclick = () => fetchWeather(item.city);
+
+    el.innerHTML = `
+      <div class="city-info">
+        <p class="time-small">${time}</p>
+        <h3>${item.city}</h3>
+        <p class="summary">${item.condition}</p>
+      </div>
+      <div style="display: flex; align-items: center;">
+        <div class="city-temp">${Math.round(item.temp)}°</div>
+        <button class="delete-btn" title="Remove from history"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    `;
+
+    // Attach delete event listener
+    const deleteBtn = el.querySelector(".delete-btn");
+    deleteBtn.onclick = (e) => {
+      e.stopPropagation(); // Prevent triggering the card click
+      removeFromHistory(item.city);
+    };
+
+    historyContainer.appendChild(el);
+  });
+}
+
+function removeFromHistory(city) {
+  let history = JSON.parse(localStorage.getItem("weatherAppHistory")) || [];
+  history = history.filter(item => item.city !== city);
+  localStorage.setItem("weatherAppHistory", JSON.stringify(history));
+  renderHistory();
+  // Reset to "home" location
+  getUserLocation();
+}
+
+// Initial Render
+renderHistory();
 
 function updateDOM(data) {
   const current = data.current;
@@ -72,9 +183,7 @@ function updateDOM(data) {
   mainTemp.textContent = Math.round(current.temp_c) + "°";
   mainCondition.textContent = current.condition.text;
 
-  // Sidebar sync
-  sidebarLoc.textContent = location.name;
-  sidebarTemp.textContent = Math.round(current.temp_c) + "°";
+  // REMOVED Sidebar sync from here so it doesn't override "My Location" on search
 
   // --- Background Logic ---
   updateBackground(current.condition.text, current.is_day);
