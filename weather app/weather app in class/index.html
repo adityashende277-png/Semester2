@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+  <link rel="stylesheet" href="./style.css">
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <button class="menu-btn"><i class="fa-solid fa-bars"></i></button>
+      </div>
+
+      <div class="search-wrapper">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="search-input" placeholder="Search">
+        <button id="search-btn" style="display:none"></button>
+      </div>
+
+      <div class="saved-cities">
+        <div class="city-card current">
+          <div class="city-info">
+            <h3>My Location</h3>
+            <p id="sidebar-loc">Pimpri Chinchwad</p>
+          </div>
+          <div class="city-temp" id="sidebar-temp">28°</div>
+        </div>
+        <!-- Static mock cities as in reference image -->
+        <div class="city-card">
+          <div class="city-info">
+            <p class="time-small">12:08</p>
+            <h3>New Delhi</h3>
+            <p class="summary">Mostly Cloudy</p>
+          </div>
+          <div class="city-temp">17°</div>
+        </div>
+        <div class="city-card">
+          <div class="city-info">
+            <p class="time-small">12:08</p>
+            <h3>Mumbai</h3>
+            <p class="summary">Sunny</p>
+          </div>
+          <div class="city-temp">29°</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Dynamic Background Layer -->
+      <!-- We will change the class of this via JS for different weather -->
+      <div class="bg-layer" id="bg-layer"></div>
+
+      <div class="content-wrapper">
+        <!-- Top Section: Current Weather -->
+        <header class="current-weather-header">
+          <div class="header-content">
+            <div class="location-summary">
+              <span class="loc-label">MY LOCATION</span>
+              <h1 class="city-name" id="main-city">Pimpri Chinchwad</h1>
+              <div class="main-temp-summary">
+                <span class="main-temp" id="main-temp">28°</span>
+                <span class="divider">|</span>
+                <span class="main-condition" id="main-condition">Mostly Sunny</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Hourly Forecast -->
+        <section class="hourly-forecast-section">
+          <!-- Using inline style for glassmorphism container wrapper just in case -->
+          <div class="card hourly-card">
+            <div class="card-header"><i class="fa-regular fa-clock"></i> HOURLY FORECAST</div>
+            <div class="hourly-scroll" id="hourly-container">
+              <!-- JS Injected -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Grid Layout -->
+        <div class="dashboard-grid">
+
+          <!-- Left Column: 10-Day Forecast -->
+          <div class="grid-col-left">
+            <section class="card forecast-10-day">
+              <div class="card-header"><i class="fa-regular fa-calendar"></i> 3-DAY FORECAST</div>
+              <div class="forecast-list" id="forecast-daily-container">
+                <!-- JS Injected -->
+              </div>
+            </section>
+          </div>
+
+          <!-- Right Column: Details Grid -->
+          <div class="grid-col-right">
+
+            <!-- Air Quality -->
+            <div class="card air-quality">
+              <div class="card-header"><i class="fa-solid fa-wind"></i> AIR QUALITY</div>
+              <div class="card-content">
+                <h2 id="aqi-score">--</h2>
+                <p id="aqi-text">--</p>
+                <div class="aqi-bar">
+                  <div class="aqi-fill" style="width: 50%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Wind -->
+            <div class="card wind">
+              <div class="card-header"><i class="fa-solid fa-location-arrow"></i> WIND</div>
+              <div class="card-content-flx">
+                <div class="wind-details">
+                  <div class="row">
+                    <span>Wind</span>
+                    <span id="wind-speed">-- kph</span>
+                  </div>
+                  <div class="row">
+                    <span>Gusts</span>
+                    <span id="gust-speed">-- kph</span>
+                  </div>
+                  <div class="row">
+                    <span>Direction</span>
+                    <span id="wind-dir">--</span>
+                  </div>
+                </div>
+                <div class="wind-compass">
+                  <div class="compass-circle">
+                    <div class="needle" id="wind-needle" style="transform: rotate(0deg)"></div>
+                    <div class="center-val" id="compass-val">--</div>
+                  </div>
+                  <div class="compass-labels">
+                    <span class="n">N</span>
+                    <span class="e">E</span>
+                    <span class="s">S</span>
+                    <span class="w">W</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- UV Index -->
+            <div class="card uv-index">
+              <div class="card-header"><i class="fa-regular fa-sun"></i> UV INDEX</div>
+              <div class="card-content">
+                <h2 id="uv-val">--</h2>
+                <p id="uv-text">--</p>
+                <div class="uv-bar">
+                  <div class="uv-fill" id="uv-fill" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sunset -->
+            <div class="card sunset">
+              <div class="card-header"><i class="fa-regular fa-image"></i> SUNSET</div>
+              <div class="card-content">
+                <h2 id="sunset-time">--:--</h2>
+                <p class="sunrise-label">Sunrise: <span id="sunrise-time">--:--</span></p>
+              </div>
+            </div>
+
+            <!-- Feels Like -->
+            <div class="card feels-like">
+              <div class="card-header"><i class="fa-solid fa-temperature-half"></i> FEELS LIKE</div>
+              <div class="card-content">
+                <h2 id="feels-like">--°</h2>
+              </div>
+            </div>
+
+            <!-- Precipitation -->
+            <div class="card precip">
+              <div class="card-header"><i class="fa-solid fa-droplet"></i> PRECIPITATION</div>
+              <div class="card-content">
+                <h2 id="precip-val">-- mm</h2>
+                <p>in last 24h</p>
+              </div>
+            </div>
+
+            <!-- Humidity -->
+            <div class="card humidity">
+              <div class="card-header"><i class="fa-solid fa-water"></i> HUMIDITY</div>
+              <div class="card-content">
+                <h2 id="humidity-val">--%</h2>
+                <p class="card-footer-text">The dew point is <span id="dew-point">--°</span></p>
+              </div>
+            </div>
+
+            <!-- Visibility -->
+            <div class="card visibility">
+              <div class="card-header"><i class="fa-regular fa-eye"></i> VISIBILITY</div>
+              <div class="card-content">
+                <h2 id="vis-val">-- km</h2>
+              </div>
+            </div>
+
+            <!-- Pressure -->
+            <div class="card pressure">
+              <div class="card-header"><i class="fa-solid fa-gauge"></i> PRESSURE</div>
+              <div class="card-content">
+                <div class="gauge-chart">
+                  <span class="gauge-val" id="pressure-val">--</span>
+                  <span class="gauge-unit">hPa</span>
+                </div>
+              </div>
+            </div>
+
+          </div> <!-- End grid-col-right -->
+
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="./sc.js"></script>
+</body>
+
+</html>
